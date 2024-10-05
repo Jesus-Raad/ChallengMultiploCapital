@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+1. Arquitectura Principal
+Este proyecto está diseñado con Next.js, utilizando React para la interacción del frontend y varias bibliotecas para la visualización de datos y manejo de tablas. La aplicación incluye un menú de navegación que permite  moverse entre diferentes páginas: Información, Análisis y Política de Privacidad. Cada página tiene una funcionalidad específica:
 
-## Getting Started
+Página de Información: Muestra una tabla editable de activos financieros usando ReactGrid, con funcionalidad de autocompletado.
 
-First, run the development server:
+Página de Análisis: Muestra el valor total del portafolio y un gráfico circular que distribuye el valor por tipo de activo, utilizando Chart.js.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Página de Política de Privacidad: Contiene un texto estático sobre las políticas de privacidad.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Módulos Utilizados
+Next.js: Marco principal del proyecto.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+ReactGrid: Usado para mostrar y editar la tabla en la página de Información. Permite a los usuarios ingresar y modificar datos, con funcionalidad de autocompletado.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Chart.js: Librería para la visualización gráfica de datos. Se utilizó en la página de Análisis para crear el gráfico circular que representa la distribución del portafolio.
 
-## Learn More
+PapaParse: Librería para parsear archivos CSV. Esto se utilizó para leer los datos estáticos (acciones, criptomonedas, ETF) desde un archivo CSV local en la página de Información.
 
-To learn more about Next.js, take a look at the following resources:
+localStorage: Se utiliza para la persistencia de datos. Los datos que los usuarios ingresan en la tabla (acciones, precios, etc.) se guardan localmente para que no se pierdan al navegar entre páginas.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Context API de React: Se utilizó para compartir los datos del portafolio entre las páginas de Información y Análisis.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+3. Decisiones Técnicas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Manejo de estado con Context API: Opté por usar la API de Contexto de React para manejar los datos compartidos entre las diferentes páginas, como la lista de activos. 
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Persistencia de datos con localStorage: Decidí almacenar los datos en localStorage para que los usuarios puedan navegar entre las diferentes páginas sin perder los valores ingresados. 
+
+Gráfico con Chart.js: Se utilizó Chart.js . Se eligió un gráfico circular para visualizar la distribución de los activos por clase (acciones, criptomonedas, ETF).
+
+4. Explicación de las Páginas
+
+AnalysisSection.jsx:
+
+Calcula el valor total del portafolio en función del número de acciones y el precio ingresado por el usuario.
+Visualiza estos datos en una tabla y un gráfico circular que muestra la distribución por tipo de activo.
+
+
+InfoSection.jsx:
+
+Usa ReactGrid para mostrar una tabla con los activos y permite editar las columnas de Acciones y Precio.
+Implementa una función de autocompletado en la columna "Nombre", que rellena automáticamente las columnas ISIN, TIKR y Volatilidad basándose en la selección del usuario.
+Los datos se cargan desde un archivo CSV y se guardan en localStorage para persistencia.
+
+
+PrivacyPolitics.jsx:
+
+Simplemente muestra un texto estático relacionado con las políticas de privacidad.
