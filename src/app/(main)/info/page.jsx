@@ -1,11 +1,13 @@
 import React from 'react'
-import InfoSection from './InfoSection'
+import TablaClientProducts from './TablaClientProducts'
+// import InfoSection from './InfoSection'
 
 
 const page = () => {
   return (
     <div>
-      <InfoSection/>
+      {/* <InfoSection/> */}
+      <TablaClientProducts/>
     </div>
   )
 }

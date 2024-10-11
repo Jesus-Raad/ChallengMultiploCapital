@@ -1,5 +1,5 @@
-name,isin,tikr,volatility,type,shares,price
-apple,US1234567890,AAPL,0.25,Stock,10,150.00
-google,US9876543210,GOOGL,0.15,Stock,15,2800.00
-bitcoin,US1928374650,BTC,0.40,Crypto,1,30000.00
-etf,US5647382910,SPY,0.10,ETF,20,440.00
+name,isin,tikr,volatility,type
+apple,US1234567890,AAPL,0.25,Stock
+google,US9876543210,GOOGL,0.15,Stock
+bitcoin,US1928374650,BTC,0.40,Crypto
+etf,US5647382910,SPY,0.10,ETF

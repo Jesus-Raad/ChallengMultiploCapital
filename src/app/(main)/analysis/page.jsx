@@ -1,9 +1,11 @@
 import React from 'react'
-import AnalysisSection from './AnalysisSection'
+// import AnalysisSection from './AnalysisSection'
 
 const page = () => {
   return (
-    <div><AnalysisSection/></div>
+    <div>hola
+      {/* <AnalysisSection/> */}
+    </div>
   )
 }
 
