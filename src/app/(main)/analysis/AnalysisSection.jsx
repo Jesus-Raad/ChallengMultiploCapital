@@ -6,18 +6,12 @@ import { CapitalContext } from '@/context/capitalContext';
 ChartJS.register(ArcElement, Tooltip, Legend);
 const AnalysisSection = () => {
    
-  const [currentValue, setCurrentValue] = useState(0);
+  
   const {dataDetail, setDataDetail}=useContext(CapitalContext)
 console.log(dataDetail);
 
  
-useEffect(() => {
-    // Calcular el valor actual del portafolio
-    const totalValue = dataDetail.reduce((acc, item) => {
-        return acc + (item.shares * item.price);
-    }, 0);
-    setCurrentValue(totalValue);
-}, []);
+
 
 // Configuración del gráfico circular
 const chartData = {
