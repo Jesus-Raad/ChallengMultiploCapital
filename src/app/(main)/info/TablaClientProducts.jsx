@@ -1,16 +1,17 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { ReactGrid, Row, Column } from "@silevis/reactgrid";
+import { ReactGrid } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import { CapitalContext } from "@/context/capitalContext";
 
 const TablaClientProducts = () => {
   const { data } = useContext(CapitalContext);
 
-  console.log(data);
-  
+  const [rows, setRows] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // Para el buscador
+  const [selectedProduct, setSelectedProduct] = useState(null); // Para el producto seleccionado
 
-  // Define las columnas (encabezados)
   const columns = [
     { columnId: "name", width: 200, title: "Name" },
     { columnId: "isin", width: 150, title: "ISIN" },
@@ -20,48 +21,52 @@ const TablaClientProducts = () => {
     { columnId: "price", width: 150, title: "Precio" },
   ];
 
-   // Estado inicial de filas como un array vacío
-  const [rows, setRows] = useState([]);
-
-  //  cargar  datos de localStorage 
   useEffect(() => {
     const savedRows = localStorage.getItem("tableRows");
     if (savedRows) {
       setRows(JSON.parse(savedRows));
     } else {
-      // Si no hay datos en localStorage, se establecen las filas por defecto
       setRows([
         {
           rowId: "header",
           cells: columns.map((col) => ({ columnId: col.columnId, type: "header", text: col.title })),
         },
-        {
-          rowId: "row1",
-          cells: columns.map((col) => ({ columnId: col.columnId, type: "text", text: "" })),
-        },
+      
       ]);
     }
-  }, []); // Se ejecuta una vez, al montar el componente
+  }, []);
 
-
-  // Guardar filas en localStorage
   useEffect(() => {
     if (rows.length > 0) {
       localStorage.setItem("tableRows", JSON.stringify(rows));
     }
   }, [rows]);
 
+  const openDialog = () => {
+    setIsDialogOpen(true);
+    setSearchTerm(""); // Reiniciar el término de búsqueda al abrir el diálogo
+    setSelectedProduct(null); // Reiniciar el producto seleccionado
+  };
 
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+  };
 
-
-
-  //  adición de filas
   const addRow = () => {
-    const newRow = {
-      rowId: `row${rows.length}`,
-      cells: columns.map((col) => ({  columnId: col.columnId, type: "text", text: "" })),
-    };
-    setRows([...rows, newRow]);
+    if (selectedProduct) {
+      const newRow = {
+        rowId: `row${rows.length + 1}`,
+        cells: columns.map((col) => {
+          if (col.columnId === "name") return { columnId: col.columnId, type: "text", text: selectedProduct.name };
+          if (col.columnId === "isin") return { columnId: col.columnId, type: "text", text: selectedProduct.isin };
+          if (col.columnId === "tikr") return { columnId: col.columnId, type: "text", text: selectedProduct.tikr };
+          if (col.columnId === "volatility") return { columnId: col.columnId, type: "text", text: selectedProduct.volatility };
+          return { columnId: col.columnId, type: "text", text: "" }; // Celdas vacías para las otras columnas
+        }),
+      };
+      setRows([...rows, newRow]);
+      closeDialog();
+    }
   };
 
   const handleChanges2 = (changes) => {
@@ -69,8 +74,6 @@ const TablaClientProducts = () => {
       const newRows = [...prevRows];
 
       changes.forEach((change) => {
-       
-
         const { rowId, columnId, newCell } = change;
         const rowIndex = newRows.findIndex((row) => row.rowId === rowId);
 
@@ -84,23 +87,20 @@ const TablaClientProducts = () => {
             (item) => item.name.toLowerCase() === newCell.text.toLowerCase()
           );
 
-
           if (stockInfo) {
             cells[0] = { ...cells[0], text: stockInfo.name };
             cells[1] = { ...cells[1], text: stockInfo.isin };
             cells[2] = { ...cells[2], text: stockInfo.tikr };
             cells[3] = { ...cells[3], text: stockInfo.volatility };
-            
           }
-        } else  {
-            // Encuentra la celda correspondiente a la columna que cambió
-            const cellIndex = cells.findIndex(
-              (cell) => cell.columnId === columnId
-            );
-            if (cellIndex !== -1) {
-              cells[cellIndex] = { ...cells[cellIndex], text: newCell.text };
-            }
+        } else {
+          const cellIndex = cells.findIndex(
+            (cell) => cell.columnId === columnId
+          );
+          if (cellIndex !== -1) {
+            cells[cellIndex] = { ...cells[cellIndex], text: newCell.text };
           }
+        }
 
         row.cells = cells;
         newRows[rowIndex] = row;
@@ -110,20 +110,64 @@ const TablaClientProducts = () => {
     });
   };
 
-
-
-
- 
-  
+  // Filtrar productos según el término de búsqueda
+  const filteredProducts = data.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div>
+    <div className="relative">
       <ReactGrid
         rows={rows}
         columns={columns}
         onCellsChanged={handleChanges2}
       />
-      <button onClick={addRow}>Agregar Fila</button>
+      <button 
+        className="mt-4 p-2 bg-gray-500 text-white rounded hover:bg-gray-600" 
+        onClick={openDialog}
+      >
+        Agregar Fila
+      </button>
+      
+      {isDialogOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-md w-1/3">
+            <h3 className="text-lg font-semibold mb-4">Selecciona una opción:</h3>
+            <input 
+              type="text" 
+              placeholder="Buscar producto..." 
+              value={searchTerm} 
+              onChange={(e) => setSearchTerm(e.target.value)} 
+              className="border border-gray-300 rounded p-2 mb-4 w-full"
+            />
+            <ul className="max-h-40 overflow-y-auto border border-gray-300 rounded">
+              {filteredProducts.map((item) => (
+                <li 
+                  key={item.isin} 
+                  className={`p-2 cursor-pointer hover:bg-gray-200 ${selectedProduct === item ? "bg-gray-300" : ""}`}
+                  onClick={() => setSelectedProduct(item)}
+                >
+                  {item.name}
+                </li>
+              ))}
+            </ul>
+            <div className="flex justify-end mt-4">
+              <button 
+                onClick={addRow} 
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2"
+              >
+                Agregar
+              </button>
+              <button 
+                onClick={closeDialog} 
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
