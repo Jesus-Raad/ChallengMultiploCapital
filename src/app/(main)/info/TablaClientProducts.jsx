@@ -7,7 +7,8 @@ import { CapitalContext } from "@/context/capitalContext";
 const TablaClientProducts = () => {
   const { data } = useContext(CapitalContext);
 
-//   console.log(data);
+  console.log(data);
+  
 
   // Define las columnas (encabezados)
   const columns = [
@@ -22,7 +23,7 @@ const TablaClientProducts = () => {
    // Estado inicial de filas como un array vacío
   const [rows, setRows] = useState([]);
 
-  // Efecto para cargar los datos de localStorage después de que el componente se haya montado
+  //  cargar  datos de localStorage 
   useEffect(() => {
     const savedRows = localStorage.getItem("tableRows");
     if (savedRows) {
@@ -68,7 +69,7 @@ const TablaClientProducts = () => {
       const newRows = [...prevRows];
 
       changes.forEach((change) => {
-        // console.log(change);
+       
 
         const { rowId, columnId, newCell } = change;
         const rowIndex = newRows.findIndex((row) => row.rowId === rowId);
@@ -83,11 +84,13 @@ const TablaClientProducts = () => {
             (item) => item.name.toLowerCase() === newCell.text.toLowerCase()
           );
 
+
           if (stockInfo) {
             cells[0] = { ...cells[0], text: stockInfo.name };
             cells[1] = { ...cells[1], text: stockInfo.isin };
             cells[2] = { ...cells[2], text: stockInfo.tikr };
             cells[3] = { ...cells[3], text: stockInfo.volatility };
+            
           }
         } else  {
             // Encuentra la celda correspondiente a la columna que cambió
@@ -110,7 +113,7 @@ const TablaClientProducts = () => {
 
 
 
-  console.log(rows);
+ 
   
 
   return (
