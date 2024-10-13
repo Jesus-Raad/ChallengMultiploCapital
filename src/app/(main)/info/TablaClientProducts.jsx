@@ -8,9 +8,6 @@ const TablaClientProducts = () => {
   const { data } = useContext(CapitalContext);
 
   const [rows, setRows] = useState([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // Para el buscador
-  const [selectedProduct, setSelectedProduct] = useState(null); // Para el producto seleccionado
 
   const columns = [
     { columnId: "name", width: 200, title: "Name" },
@@ -29,9 +26,12 @@ const TablaClientProducts = () => {
       setRows([
         {
           rowId: "header",
-          cells: columns.map((col) => ({ columnId: col.columnId, type: "header", text: col.title })),
+          cells: columns.map((col) => ({
+            columnId: col.columnId,
+            type: "header",
+            text: col.title,
+          })),
         },
-      
       ]);
     }
   }, []);
@@ -42,30 +42,39 @@ const TablaClientProducts = () => {
     }
   }, [rows]);
 
-  const openDialog = () => {
-    setIsDialogOpen(true);
-    setSearchTerm(""); // Reiniciar el término de búsqueda al abrir el diálogo
-    setSelectedProduct(null); // Reiniciar el producto seleccionado
-  };
-
-  const closeDialog = () => {
-    setIsDialogOpen(false);
-  };
-
   const addRow = () => {
     if (selectedProduct) {
       const newRow = {
         rowId: `row${rows.length + 1}`,
         cells: columns.map((col) => {
-          if (col.columnId === "name") return { columnId: col.columnId, type: "text", text: selectedProduct.name };
-          if (col.columnId === "isin") return { columnId: col.columnId, type: "text", text: selectedProduct.isin };
-          if (col.columnId === "tikr") return { columnId: col.columnId, type: "text", text: selectedProduct.tikr };
-          if (col.columnId === "volatility") return { columnId: col.columnId, type: "text", text: selectedProduct.volatility };
+          if (col.columnId === "name")
+            return {
+              columnId: col.columnId,
+              type: "text",
+              text: selectedProduct.name,
+            };
+          if (col.columnId === "isin")
+            return {
+              columnId: col.columnId,
+              type: "text",
+              text: selectedProduct.isin,
+            };
+          if (col.columnId === "tikr")
+            return {
+              columnId: col.columnId,
+              type: "text",
+              text: selectedProduct.tikr,
+            };
+          if (col.columnId === "volatility")
+            return {
+              columnId: col.columnId,
+              type: "text",
+              text: selectedProduct.volatility,
+            };
           return { columnId: col.columnId, type: "text", text: "" }; // Celdas vacías para las otras columnas
         }),
       };
       setRows([...rows, newRow]);
-      closeDialog();
     }
   };
 
@@ -110,9 +119,23 @@ const TablaClientProducts = () => {
     });
   };
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // Para el buscador
+  const [selectedProduct, setSelectedProduct] = useState(null); // Para el producto seleccionado
+
+  const openDialog = () => {
+    setIsDialogOpen(true);
+    setSearchTerm(""); // Reiniciar el término de búsqueda al abrir el diálogo
+    setSelectedProduct(null); // Reiniciar el producto seleccionado
+  };
+
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+  };
+
   // Filtrar productos según el término de búsqueda
-  const filteredProducts = data.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProducts = data.filter((option) =>
+    option.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -122,29 +145,33 @@ const TablaClientProducts = () => {
         columns={columns}
         onCellsChanged={handleChanges2}
       />
-      <button 
-        className="mt-4 p-2 bg-gray-500 text-white rounded hover:bg-gray-600" 
+      <button
+        className="mt-4 p-2 bg-gray-500 text-white rounded hover:bg-gray-600"
         onClick={openDialog}
       >
         Agregar Fila
       </button>
-      
+
       {isDialogOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-md w-1/3">
-            <h3 className="text-lg font-semibold mb-4">Selecciona una opción:</h3>
-            <input 
-              type="text" 
-              placeholder="Buscar producto..." 
-              value={searchTerm} 
-              onChange={(e) => setSearchTerm(e.target.value)} 
+            <h3 className="text-lg font-semibold mb-4">
+              Selecciona una opción:
+            </h3>
+            <input
+              type="text"
+              placeholder="Buscar producto..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="border border-gray-300 rounded p-2 mb-4 w-full"
             />
             <ul className="max-h-40 overflow-y-auto border border-gray-300 rounded">
               {filteredProducts.map((item) => (
-                <li 
-                  key={item.isin} 
-                  className={`p-2 cursor-pointer hover:bg-gray-200 ${selectedProduct === item ? "bg-gray-300" : ""}`}
+                <li
+                  key={item.isin}
+                  className={`p-2 cursor-pointer hover:bg-gray-200 ${
+                    selectedProduct === item ? "bg-gray-300" : ""
+                  }`}
                   onClick={() => setSelectedProduct(item)}
                 >
                   {item.name}
@@ -152,14 +179,14 @@ const TablaClientProducts = () => {
               ))}
             </ul>
             <div className="flex justify-end mt-4">
-              <button 
-                onClick={addRow} 
+              <button
+                onClick={addRow}
                 className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2"
               >
                 Agregar
               </button>
-              <button 
-                onClick={closeDialog} 
+              <button
+                onClick={closeDialog}
                 className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
               >
                 Cancelar
