@@ -120,13 +120,13 @@ const TablaClientProducts = () => {
   };
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // Para el buscador
-  const [selectedProduct, setSelectedProduct] = useState(null); // Para el producto seleccionado
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [selectedProduct, setSelectedProduct] = useState(null); 
 
   const openDialog = () => {
     setIsDialogOpen(true);
-    setSearchTerm(""); // Reiniciar el término de búsqueda al abrir el diálogo
-    setSelectedProduct(null); // Reiniciar el producto seleccionado
+    setSearchTerm(""); 
+    setSelectedProduct(null); 
   };
 
   const closeDialog = () => {

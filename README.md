@@ -1,49 +1,33 @@
 1. Arquitectura Principal
-Este proyecto está diseñado con Next.js, utilizando React para la interacción del frontend y varias bibliotecas para la visualización de datos y manejo de tablas. La aplicación incluye un menú de navegación que permite  moverse entre diferentes páginas: Información, Análisis y Política de Privacidad. Cada página tiene una funcionalidad específica:
 
-Página de Información: Muestra una tabla editable de activos financieros usando ReactGrid, con funcionalidad de autocompletado.
+El proyecto está construido con Next.js y React para el frontend. Se usan varias bibliotecas para manejar la visualización de datos y tablas. Hay un menú de navegación que permite moverse entre tres páginas principales: Tabla de Activos, Análisis y Política de Privacidad. Cada una tiene su propia función:
 
-Página de Análisis: Muestra el valor total del portafolio y un gráfico circular que distribuye el valor por tipo de activo, utilizando Chart.js.
+Página de la tabla de activos: Aquí se muestra una tabla editable de activos financieros usando ReactGrid, con autocompletado.
 
-Página de Política de Privacidad: Contiene un texto estático sobre las políticas de privacidad.
+Página de Análisis: Muestra el valor total del portafolio y un gráfico circular que distribuye el valor por tipo de activo (acciones, criptomonedas, etc.) usando Chart.js.
 
-2. Módulos Utilizados
-Next.js: Marco principal del proyecto.
+Página de Política de Privacidad: Contiene solo un texto fijo explicando las políticas de privacidad.
 
-ReactGrid: Usado para mostrar y editar la tabla en la página de Información. Permite a los usuarios ingresar y modificar datos, con funcionalidad de autocompletado.
+2. Explicación de las Páginas
 
-Chart.js: Librería para la visualización gráfica de datos. Se utilizó en la página de Análisis para crear el gráfico circular que representa la distribución del portafolio.
+TablaClientProducts.jsx: Utiliza ReactGrid para mostrar una tabla con solo encabezados. Hay un botón que abre un modal donde se pueden filtrar opciones y seleccionar una. Al hacer clic en "Agregar", se añaden los datos (nombre, ISIN, TIKR, volatilidad) a la tabla. Los campos de acciones y precios quedan vacíos para que el usuario los complete.
 
-PapaParse: Librería para parsear archivos CSV. Esto se utilizó para leer los datos estáticos (acciones, criptomonedas, ETF) desde un archivo CSV local en la página de Información.
+AnalysisSection.jsx: Toma los datos ingresados en la página de la Tabla de Activos, usando localStorage, y los muestra en una tabla con el valor total de cada activo. También muestra un gráfico circular que representa la proporción de los activos por tipo.
 
-localStorage: Se utiliza para la persistencia de datos. Los datos que los usuarios ingresan en la tabla (acciones, precios, etc.) se guardan localmente para que no se pierdan al navegar entre páginas.
+PrivacyPolitics.jsx: Simplemente muestra un texto fijo sobre las políticas de privacidad.
 
-Context API de React: Se utilizó para compartir los datos del portafolio entre las páginas de Información y Análisis.
+3. Módulos Utilizados
 
+Next.js: Es el marco principal del proyecto.
 
-3. Decisiones Técnicas
+ReactGrid: Se usa para la tabla editable en la página de Información. Los usuarios pueden ingresar y modificar datos, con autocompletado.
 
-Manejo de estado con Context API: Opté por usar la API de Contexto de React para manejar los datos compartidos entre las diferentes páginas, como la lista de activos. 
+Chart.js: Esta librería sirve para crear gráficos. Se usó en la página de Análisis para hacer el gráfico circular que muestra la distribución del portafolio.
 
-Persistencia de datos con localStorage: Decidí almacenar los datos en localStorage para que los usuarios puedan navegar entre las diferentes páginas sin perder los valores ingresados. 
+PapaParse: Sirve para leer archivos CSV. Lo usé para cargar datos estáticos de acciones y otros activos en la página de Información.
 
-Gráfico con Chart.js: Se utilizó Chart.js . Se eligió un gráfico circular para visualizar la distribución de los activos por clase (acciones, criptomonedas, ETF).
+4. Decisiones Técnicas
 
-4. Explicación de las Páginas
+Manejo de estado con Context API: Decidí usar Context API para pasar datos entre las páginas, como las opciones de autocompletado.
 
-AnalysisSection.jsx:
-
-Calcula el valor total del portafolio en función del número de acciones y el precio ingresado por el usuario.
-Visualiza estos datos en una tabla y un gráfico circular que muestra la distribución por tipo de activo.
-
-
-InfoSection.jsx:
-
-Usa ReactGrid para mostrar una tabla con los activos y permite editar las columnas de Acciones y Precio.
-Implementa una función de autocompletado en la columna "Nombre", que rellena automáticamente las columnas ISIN, TIKR y Volatilidad basándose en la selección del usuario.
-Los datos se cargan desde un archivo CSV y se guardan en localStorage para persistencia.
-
-
-PrivacyPolitics.jsx:
-
-Simplemente muestra un texto estático relacionado con las políticas de privacidad.
+Persistencia de datos con localStorage: Almaceno los datos en localStorage para que no se pierdan al moverse entre páginas.
